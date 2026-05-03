@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Management | Scarlet Dress</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary-color: #b93e64; --secondary-color: #f28c8c; --background-light: #fff0f5; --background-super-light: #fef4f8; --text-dark: #444; --text-light: #777; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--background-super-light); color: var(--text-dark); }
+    .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.07); }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .page-header h1 { color: var(--primary-color); margin: 0; font-size: 2rem; }
+    .btn { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background 0.3s; font-size: 0.9rem; }
+    .btn:hover { background-color: #9a2c50; }
+    .btn i { margin-right: 8px; }
+
+    /* Search Bar Styles */
+    .search-bar { display: flex; gap: 10px; margin-bottom: 25px; }
+    .search-bar input[type="text"] { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+    .search-bar button { background-color: var(--primary-color); color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--background-light); }
+    th { color: var(--primary-color); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
+    td.number { text-align: right; }
+    .employee-info .name { font-weight: 600; }
+    .employee-info .email { font-size: 0.85rem; color: var(--text-light); }
+    .performance-info .sales { font-weight: 600; font-size: 1.1rem; }
+    .performance-info .orders { font-size: 0.85rem; color: var(--text-light); }
+    .actions { display: flex; gap: 10px; }
+    .actions .btn { padding: 6px 12px; font-size: 0.8rem; }
+    .delete-btn { background-color: var(--secondary-color); }
+    .flash { padding: 15px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
+    .flash.success { background-color: #d4edda; color: #155724; }
+    .flash.danger { background-color: #f8d7da; color: #721c24; }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; display: none; align-items: center; justify-content: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { margin: 0; color: var(--primary-color); }
+    .close-btn { font-size: 2rem; color: #aaa; cursor: pointer; border: none; background: none; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+    .modal-footer { text-align: right; margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end; }
+       
+.back-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #9a2c50;
+}
+
+.back-link i {
+    margin-right: 8px;
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+    <div class="page-header">
+        <a href="{{ dashboard_url }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <h1>Employee Management</h1>
+        <button class="btn" id="add-employee-btn"><i class="fas fa-plus"></i> Add New Employee</button>
+    </div>
+      <!-- NEW: Search Form -->
+      <form method="GET" action="{{ url_for('EmployeeMan_bp.manage_employees') }}" class="search-bar">
+          <input type="text" name="search" placeholder="Search by name, email, or role..." value="{{ search_query or '' }}">
+          <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+      {% endwith %}
+
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Role</th>
+            <th class="number">Performance</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for employee in employees %}
+          <tr>
+            <td>
+              <div class="employee-info">
+                <span class="name">{{ employee.name }}</span>
+                <span class="email">{{ employee.email }}</span>
+              </div>
+            </td>
+            <td>{{ employee.role }}</td>
+            <td class="number">
+              <div class="performance-info">
+                <span class="sales">${{ "%.2f"|format(performance[employee.employee_id].total_sales | default(0.0)) }}</span>
+                <span class="orders">{{ performance[employee.employee_id].total_orders_handled | default(0) }} orders</span>
+              </div>
+            </td>
+            <td class="actions">
+              <button class="btn edit-btn" 
+                      data-id="{{ employee.employee_id }}"
+                      data-name="{{ employee.name }}"
+                      data-role="{{ employee.role }}"
+                      data-salary="{{ employee.salary or '' }}"
+                      data-join_date="{{ employee.join_date or '' }}"
+                      data-email="{{ employee.email }}">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <form method="POST" onsubmit="return confirm('Are you sure?');" style="display: inline;">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="employee_id" value="{{ employee.employee_id }}">
+                <button class="btn delete-btn" type="submit"><i class="fas fa-trash-alt"></i> Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 40px;">
+                {% if search_query %}
+                  No employees found matching '{{ search_query }}'.
+                {% else %}
+                  No employees found.
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="employee-modal">
+      <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Add New Employee</h2>
+        <button class="close-btn" id="close-modal-btn">×</button>
+      </div>
+      <form method="POST" id="employee-form">
+        <input type="hidden" name="action" id="form-action">
+        <input type="hidden" name="employee_id" id="form-employee-id">
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" name="name" id="form-name" required>
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <input type="text" name="role" id="form-role" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="form-email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="form-password" placeholder="Leave blank to keep current">
+        </div>
+        
+        <input type="hidden" name="salary" id="form-salary">
+        <input type="hidden" name="join_date" id="form-join_date">
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancel</button>
+          <button type="submit" class="btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('employee-modal');
+      const addBtn = document.getElementById('add-employee-btn');
+      const closeBtn = document.getElementById('close-modal-btn');
+      const cancelBtn = document.getElementById('cancel-modal-btn');
+      const editBtns = document.querySelectorAll('.edit-btn');
+      
+      const form = document.getElementById('employee-form');
+      const modalTitle = document.getElementById('modal-title');
+      const formAction = document.getElementById('form-action');
+      const formEmployeeId = document.getElementById('form-employee-id');
+      const formName = document.getElementById('form-name');
+      const formRole = document.getElementById('form-role');
+      const formEmail = document.getElementById('form-email');
+      const formPassword = document.getElementById('form-password');
+      const formSalary = document.getElementById('form-salary');
+      const formJoinDate = document.getElementById('form-join_date');
+
+      const openModal = () => modal.style.display = 'flex';
+      const closeModal = () => modal.style.display = 'none';
+
+      addBtn.addEventListener('click', () => {
+        form.reset();
+        modalTitle.textContent = 'Add New Employee';
+        formAction.value = 'add';
+        formEmployeeId.value = '';
+        formPassword.required = true;
+        openModal();
+      });
+
+      editBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          form.reset();
+          modalTitle.textContent = 'Edit Employee';
+          formAction.value = 'update';
+          formEmployeeId.value = btn.dataset.id;
+          formName.value = btn.dataset.name;
+          formRole.value = btn.dataset.role;
+          formEmail.value = btn.dataset.email;
+          formSalary.value = btn.dataset.salary;
+          formJoinDate.value = btn.dataset.join_date;
+          formPassword.required = false;
+          openModal();
+        });
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

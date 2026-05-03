@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Management | Scarlet Dress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #fef4f8;
+      color: #444;
+    }
+    .header {
+      background: #b93e64;
+      padding: 30px 20px;
+      text-align: center;
+      color: white;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    .header h1 { margin: 0; font-size: 2.5rem; }
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.1);
+      padding: 8px 15px;
+      border-radius: 50px;
+    }
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    }
+    .filter-nav {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #fff0f5;
+    }
+    .filter-nav a {
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .filter-nav a.active {
+        background-color: #b93e64;
+        color: white;
+    }
+    .filter-nav a:not(.active) {
+        background-color: #fff0f5;
+        color: #b93e64;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ffe4e1; }
+    th { background-color: #fff0f5; color: #b93e64; }
+    /* Centering the icon in the new column */
+    td.notes-cell {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #b93e64;
+    }
+    .status-select {
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    .btn-details {
+        background-color: #b93e64;
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="{{ dashboard_url }}" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+    <h1>Order Management</h1>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <nav class="filter-nav">
+        <a href="{{ url_for('order_bp.list_orders', status='All') }}" class="{{ 'active' if current_status == 'All' }}">All Orders</a>
+        <a href="{{ url_for('order_bp.list_orders', status='Pending Payment') }}" class="{{ 'active' if current_status == 'Pending Payment' }}">Pending Payment</a>
+        <a href="{{ url_for('order_bp.list_orders', status='Completed') }}" class="{{ 'active' if current_status == 'Completed' }}">Completed</a>
+        <a href="{{ url_for('order_bp.list_orders', status='Shipped') }}" class="{{ 'active' if current_status == 'Shipped' }}">Shipped</a>
+        <a href="{{ url_for('order_bp.list_orders', status='Canceled') }}" class="{{ 'active' if current_status == 'Canceled' }}">Canceled</a>
+      </nav>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer Name</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Notes</th> 
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td>#{{ order.order_id }}</td>
+            <td>{{ order.customer_name or 'N/A' }}</td>
+            <td>{{ order.order_date.strftime('%Y-%m-%d') }}</td>
+            <td>${{ "%.2f"|format(order.total_amount) }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('order_bp.update_status', status=current_status) }}">
+                  <input type="hidden" name="order_id" value="{{ order.order_id }}">
+                  <select name="status" class="status-select" onchange="this.form.submit()">
+                      <option value="Pending Payment" {% if order.status == 'Pending Payment' %}selected{% endif %}>Pending Payment</option>
+                      <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+                      <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                      <option value="Canceled" {% if order.status == 'Canceled' %}selected{% endif %}>Canceled</option>
+                  </select>
+              </form>
+            </td>
+
+            <td class="notes-cell">
+                {% if order.order_id in tailored_order_ids %}
+                    <i class="fas fa-cut" title="This order has tailoring requests"></i>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{{ url_for('order_bp.view_order', order_id=order.order_id) }}" class="btn-details">View Details</a>
+            </td>
+          </tr>
+          {% else %}
+            <tr><td colspan="7" style="text-align: center; padding: 40px;">No orders found with this status.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

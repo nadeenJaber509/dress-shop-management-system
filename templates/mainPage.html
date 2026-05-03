@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shop | Scarlet Dress</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #b93e64;
+      --secondary-color: #e7668d;
+      --sale-color: #d9534f;
+      --background-light: #fff0f5;
+      --background-super-light: #fdf4f8;
+      --text-dark: #4a3c41;
+      --text-light: #a0707f;
+      --white-color: #ffffff;
+      --border-color: #e8e8e8; 
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--background-super-light); min-height: 100vh; display: flex; flex-direction: column; font-family: 'Poppins', sans-serif; color: var(--text-dark); }
+    
+    header { 
+      background-color: var(--white-color); 
+      padding: 15px 5%; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+      position: sticky; top: 0; z-index: 1000;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .brand { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: var(--primary-color); }
+    nav { display: flex; align-items: center; gap: 35px; }
+    nav a { color: var(--primary-color); text-decoration: none; font-weight: 500; font-size: 1.05rem; }
+    .profile-controls { display: flex; align-items: center; gap: 25px; }
+    .profile-icon { font-size: 1.5rem; color: var(--primary-color); }
+    
+    .hero { text-align: center; padding: 70px 30px; background: var(--background-light); }
+    .hero h2 { font-family: 'Great Vibes', cursive; font-size: 4.5rem; font-weight: normal; color: var(--primary-color); margin-bottom: 10px; }
+    .hero p { font-size: 1.1rem; color: var(--text-light); max-width: 600px; margin: 0 auto; }
+
+    .gallery { padding: 50px 5%; max-width: 1600px; margin: auto; }
+    
+    .filter-container {
+      margin-bottom: 50px;
+      padding: 20px 25px;
+      background-color: var(--white-color);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.03);
+    }
+    .filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 25px; }
+    
+    .filter-bar h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-right: 10px;
+        padding-right: 25px;
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-group { display: flex; align-items: center; gap: 12px; }
+    .filter-group label { font-weight: 500; color: var(--text-light); font-size: 0.95rem; }
+    
+    .select-wrapper {
+        position: relative;
+        width: 200px; 
+    }
+    .select-wrapper::after {
+        content: '\f078'; 
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        pointer-events: none; 
+        transition: color 0.2s;
+    }
+    .select-wrapper select {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px 35px 10px 15px; 
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        cursor: pointer;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .select-wrapper select:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(185, 62, 100, 0.15);
+    }
+    .select-wrapper:hover::after {
+        color: var(--primary-color);
+    }
+
+    .filter-group.reset-group {
+        margin-left: auto; 
+    }
+    .reset-btn {
+        background-color: transparent;
+        color: var(--text-light);
+        padding: 9px 18px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    .reset-btn:hover {
+        background-color: var(--background-super-light);
+        border-color: var(--secondary-color);
+        color: var(--primary-color);
+    }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+    .card { background: var(--white-color); border-radius: 10px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
+    .card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08); }
+    .card-image-container { position: relative; overflow: hidden; }
+    .card img { width: 100%; height: 400px; object-fit: cover; transition: transform 0.4s ease; }
+    .card:hover img { transform: scale(1.05); }
+
+    .favorite-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); border: 1px solid rgba(0,0,0,0.05); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-dark); transition: all 0.3s ease; }
+    .favorite-btn:hover { background: var(--white-color); }
+    .favorite-btn.active { color: var(--sale-color); }
+    .favorite-btn.active.pulse { animation: pulse 0.5s ease-out; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+    
+    .card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; text-align: center; }
+    .card-content h4 { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin: 0 0 5px 0; }
+    .card-content .category { font-size: 0.8rem; font-weight: 500; color: var(--text-light); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+    .card-actions { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+    .price-container { display: flex; gap: 10px; align-items: center; justify-content: center; }
+    .price, .sale-price { font-size: 1.3rem; font-weight: 600; }
+    .sale-price { color: var(--sale-color); }
+    .original-price { text-decoration: line-through; color: var(--text-light); }
+    .add-to-cart-btn { background-color: var(--primary-color); color: var(--white-color); border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .add-to-cart-btn:hover { background-color: #9a2c50; }
+    .sale-tag { position: absolute; top: 15px; left: 15px; background-color: var(--sale-color); color: white; padding: 5px 10px; font-size: 0.8rem; font-weight: 600; border-radius: 5px; }
+    
+    footer { background-color: var(--background-light); padding: 50px 5%; margin-top: auto; color: var(--text-light); }
+    .footer-content { max-width: 500px; margin: 0 auto; text-align: center; }
+    .footer-content .brand { font-size: 3rem; margin-bottom: 15px; }
+    .social-links { margin: 20px 0; }
+    .social-links a { color: var(--text-light); font-size: 1.5rem; margin: 0 15px; transition: color 0.3s ease; }
+    .social-links a:hover { color: var(--primary-color); }
+    
+    .no-products { grid-column: 1 / -1; text-align: center; padding: 50px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">Scarlet Dress</div>
+    <nav>
+      <a href="{{ url_for('main_page') }}">Shop</a>
+      <a href="{{ url_for('my_orders_page') }}">My Orders</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+    <div class="profile-controls">
+      <a href="{{ url_for('cart_page') }}" title="My Cart"><i class="fas fa-shopping-bag profile-icon"></i></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Elegance in Every Stitch</h2>
+      <p>Find your perfect look from our exclusive collection of finely crafted dresses.</p>
+    </section>
+
+    <div class="gallery">
+        <div class="filter-container">
+            <form id="filter-form" method="GET" action="{{ url_for('main_page') }}" class="filter-bar">
+                <h4><i class="fas fa-filter"></i> Filters</h4>
+                <div class="filter-group">
+                    <label for="category-select">Category:</label>
+                    <div class="select-wrapper">
+                        <select name="category" id="category-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            {% for cat in categories %}<option value="{{ cat.category }}" {% if cat.category == selected_category %}selected{% endif %}>{{ cat.category }}</option>{% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="price-select">Price:</label>
+                    <div class="select-wrapper">
+                        <select name="price_range" id="price-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="0-500" {% if selected_price == '0-500' %}selected{% endif %}>$0 - $500</option>
+                            <option value="500-1500" {% if selected_price == '500-1500' %}selected{% endif %}>$500 - $1500</option>
+                            <option value="1500-99999" {% if selected_price == '1500-99999' %}selected{% endif %}>$1500+</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="sort-select">Sort By:</label>
+                    <div class="select-wrapper">
+                        <select name="sort" id="sort-select" onchange="this.form.submit()">
+                            <option value="name_asc" {% if selected_sort == 'name_asc' %}selected{% endif %}>Alphabetical</option>
+                            <option value="price_asc" {% if selected_sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_desc" {% if selected_sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-group reset-group">
+                    <button type="button" class="reset-btn" onclick="window.location.href='main_page'">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="grid">
+          {% for product in products %}
+            <div class="card">
+                <div class="card-image-container">
+                    {% if product.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Default Image">
+                    {% endif %}
+                    
+                    {% if product.stock_quantity <= 6 %}
+                        <div class="sale-tag">SALE</div>
+                    {% endif %}
+
+                    <button class="favorite-btn {% if product.product_id in wishlist %}active{% endif %}" onclick="toggleFavorite(this, '{{ product.product_id }}')" title="Add to Wishlist">
+                        <i class="{% if product.product_id in wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
+                    </button>
+                </div>
+                <div class="card-content">
+                    <p class="category">{{ product.category }}</p>
+                    <h4>{{ product.name }}</h4>
+                    <div class="card-actions">
+                        <div class="price-container">
+                            {% if product.stock_quantity <= 6 %}
+                                <span class="sale-price">${{ "%.2f"|format(product.price|float * 0.80) }}</span>
+                                <span class="original-price">${{ "%.2f"|format(product.price) }}</span>
+                            {% else %}
+                                <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                            {% endif %}
+                        </div>
+                        <form action="{{ url_for('add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.product_id }}">
+                            <button type="submit" class="add-to-cart-btn">
+                                <i class="fas fa-shopping-bag"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+          {% else %}
+            <p class="no-products">No products found matching your criteria. Please try a different filter.</p>
+          {% endfor %}
+        </div>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="footer-content">
+        <div class="brand">Scarlet Dress</div>
+        <div class="social-links">
+            <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+        <p>© {{ current_year }} Scarlet Dress. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    async function toggleFavorite(button, productId) {
+        if (!button.classList.contains('active')) {
+            button.classList.add('pulse');
+        }
+
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        try {
+            const response = await fetch("{{ url_for('toggle_favorite') }}", { method: 'POST', body: formData });
+            const result = await response.json();
+
+            if (response.ok) {
+                button.classList.toggle('active');
+                const icon = button.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+            } else { 
+                alert(result.message || 'An error occurred.');
+                button.classList.remove('pulse');
+            }
+        } catch (error) { 
+            alert('A network error occurred.');
+            button.classList.remove('pulse');
+        }
+        
+        setTimeout(() => {
+            button.classList.remove('pulse');
+        }, 500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Report | Scarlet Dress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #b93e64;
+      --secondary-color: #ffe4e1;
+      --background-light: #fff0f5;
+      --background-super-light: #fef4f8;
+      --text-dark: #444;
+      --text-light: #777;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--background-super-light);
+      color: var(--text-dark);
+    }
+    .header {
+      background: var(--primary-color);
+      padding: 30px 20px;
+      text-align: center;
+      color: white;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .header h1 { margin: 0; font-size: 2.5rem; }
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.1);
+      padding: 8px 15px;
+      border-radius: 50px;
+      transition: background 0.3s;
+    }
+    .back-link:hover { background: rgba(255,255,255,0.2); }
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    }
+    /* Filter Form Styles */
+    .filter-form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      background-color: var(--background-light);
+      padding: 20px;
+      border-radius: 15px;
+    }
+    .filter-form label { font-weight: 600; color: var(--primary-color); }
+    .filter-form select, .filter-form input {
+      padding: 10px;
+      border: 1px solid var(--secondary-color);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .filter-form button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .filter-form button:hover { background: #a03656; }
+    /* Table Styles */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--secondary-color); }
+    th { background-color: var(--background-light); color: var(--primary-color); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background-color: var(--background-super-light); }
+    .no-data { text-align: center; padding: 50px; color: var(--text-light); }
+    /* Summary Styles */
+    .summary {
+      text-align: right;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary-color);
+    }
+    .summary strong { color: var(--primary-color); font-size: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="{{ dashboard_url }}" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+    <h1>Sales Report</h1>
+  </header>
+  
+  <div class="container">
+    <div class="card">
+      <form method="GET" action="{{ url_for('sales_report_page') }}" class="filter-form">
+        <label for="month">Month:</label>
+        <select name="month" id="month">
+          {% for i in range(1, 13) %}
+            <option value="{{ i }}" {% if i == selected_month %}selected{% endif %}>{{ i }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="year">Year:</label>
+        <input type="number" name="year" id="year" value="{{ selected_year }}" min="2020" max="{{ current_year }}">
+
+        <button type="submit">View Report</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Date</th>
+            <th>Amount ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sale in sales %}
+          <tr>
+            <td>#{{ sale.order_id }}</td>
+            <td>{{ sale.customer_name }}</td>
+            <td>{{ sale.product_name }}</td>
+            <td>{{ sale.quantity }}</td>
+            <td>{{ sale.order_date.strftime('%Y-%m-%d') }}</td>
+            <td>${{ "%.2f"|format(sale.quantity * sale.price_at_time_of_purchase) }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="no-data">No sales data found for the selected period.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% if sales %}
+      <div class="summary">
+        Total Sales for {{ selected_month }}/{{ selected_year }}: <strong>${{ "%.2f"|format(total_sales) }}</strong>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome | Scarlet Dress</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: url("{{ url_for('static', filename='c5e83fb87f29a8dcfa883ab1a4ba2a63.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 200vh;
+    }
+
+    .nav {
+      position: fixed;
+      top: 20px;
+      right: 40px;
+      z-index: 1000;
+    }
+
+    .nav a {
+      margin-left: 25px;
+      text-decoration: none;
+      color: #9a4d68;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .nav a i {
+      margin-right: 6px;
+    }
+
+    .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  background: #fff0f5;
+  padding: 60px 80px;
+  border-radius: 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 1000px;
+  margin: auto; 
+  min-height: 80vh; 
+  margin: 100px auto 60px auto;
+}
+.about-section {
+  margin-bottom: 80px;
+}
+
+.access-section {
+  margin-bottom: 80px;
+}
+
+    .logo-box img {
+      width: 220px;
+      max-height: 320px;
+      object-fit: contain;
+    }
+
+    .main-box {
+      text-align: left;
+      max-width: 500px;
+    }
+
+    .main-box h1 {
+  font-size: 48px;
+  color: #b93e64;
+  margin-bottom: 20px;
+  font-family: "Brush Script MT", cursive;
+}
+
+.main-box p {
+  font-size: 22px;
+  color: #a0707f;
+  margin-bottom: 25px;
+  font-family: "Brush Script MT", cursive;
+}
+
+
+    .main-box button {
+      background-color: #b93e64;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-right: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .main-box button:hover {
+      background-color: #9a2c50;
+    }
+
+    .about-section, .access-section {
+      text-align: center;
+      padding: 80px 20px;
+      background: #fff0f5;
+    }
+
+    .about-section h2,
+    .access-section h2 {
+      font-size: 28px;
+      color: #b93e64;
+      margin-bottom: 30px;
+    }
+
+    .about-section p {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 18px;
+      color: #7a4d5a;
+      line-height: 1.6;
+    }
+
+    .roles {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .role-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    }
+
+
+    .role-card:hover {
+      transform: translateY(-5px);
+      background: #ffe4ec;
+    }
+
+    .role-card h3 {
+      color: #b93e64;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .locked {
+      opacity: 0.6;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .locked::after {
+      content: "🔒";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px;
+      }
+
+      .main-box {
+        text-align: center;
+      }
+
+      .roles {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <a href="#"><i class="fas fa-home"></i>Home</a>
+    <a href="#about"><i class="fas fa-info-circle"></i>About Us</a>
+    <a href="#access"><i class="fas fa-users"></i>Access</a>
+    <a href="/login"><i class="fas fa-sign-in-alt"></i>Login</a>
+    <a href="/signup"><i class="fas fa-user-plus"></i>Sign Up</a>
+  </div>
+
+  <!-- Welcome Section -->
+  <div class="container" data-aos="fade-up">
+    <div class="logo-box">
+      <img src="{{ url_for('static', filename='wedding-dresslogo-removebg-preview.png') }}" alt="Logo">
+    </div>
+    <div class="main-box">
+      <h1>Welcome to Scarlet Dress</h1>
+      <p>Discover elegance tailored to your unique style. Start your journey with us.</p>
+    </div>
+  </div>
+
+  <!-- About Us Section -->
+  <div class="about-section" id="about" data-aos="fade-up">
+    <h2>About Scarlet Dress</h2>
+    <p>Scarlet Dress is your destination for luxury wedding dresses and custom-fit fashion. With passion and precision, we craft gowns that celebrate individuality and grace. Whether it’s your big day or a special event, we bring your dream dress to life.</p>
+  </div>
+
+<!-- Access Section -->
+<div class="access-section" id="access" data-aos="fade-up">
+  <h2 class="section-title">Select Your Role</h2>
+  <div class="roles">
+    <a href="/" class="role-card customer">
+      <h3>Customer</h3>
+      <p>Browse and shop with a personal touch.</p>
+    </a>
+    <a href="/employee" class="role-card employee">
+      <h3>Employee</h3>
+      <p>Staff access required to manage the system.</p>
+    </a>
+    <a href="/manager" class="role-card manager">
+      <h3>Manager</h3>
+      <p>Admin features and full system access.</p>
+    </a>
+  </div>
+</div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  </script>
+</body>
+</html>
